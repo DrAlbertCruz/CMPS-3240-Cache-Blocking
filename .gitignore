@@ -1,3 +1,6 @@
+# Stackdumps
+*.stackdump
+
 # Prerequisites
 *.d
 
