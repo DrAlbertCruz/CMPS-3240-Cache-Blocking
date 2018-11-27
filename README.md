@@ -8,4 +8,4 @@ Implement cache blocking with DAXPY
 ## Requirements
 
 * The lab is intended to be run on a POSIX (Linux or MAC) operating system
-** *But, the lab can be made to run on a Windows machine with the modifications we discussed before, such as changing the header file, using `load` instead of `loadu` etc. The textbook's code snippets are what you need in this scenario.
+*But, the lab can be made to run on a Windows machine with the modifications we discussed before, such as changing the header file, using `load` instead of `loadu` etc. The textbook's code snippets are what you need in this scenario.*
