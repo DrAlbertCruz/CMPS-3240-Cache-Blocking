@@ -1,7 +1,7 @@
 # CMPS-3240-Cache-Blocking
 Implement cache blocking with DAXPY
 
-# Prerequisites
+## Prerequisites
 
 1. Read the 'Software Optimization via Blocking' subsection in Chapter 5.4 of the textbook. Pay particular attention to Figure 5.21.
 
