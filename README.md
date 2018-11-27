@@ -26,3 +26,7 @@ The example in the text uses an Intel Core i7 Sandy Bridge processor, which has 
 Your task is to take your working DAXPY code from the previous lab and add cache blocking on top of the lab. A functional version of DAXPY with AVX and loop unrolling is included with this lab. *It was not added to the `all` directive in the makefile, however.*
 
 *Further, note that the unopt_dgmm.c provided by the text does not include AVX or unrolling. Be concious of this when considering `BLOCKSIZE` for your DAXPY lab.*
+
+## Approach
+
+Note: When adding your targets to the makefile, I've created a variable called `DAXPY_FLAGS` for convenience that should be used with the compiler instead of `DGMM_FLAGS` (intended for DGMM targets without AVX and unrolling).
