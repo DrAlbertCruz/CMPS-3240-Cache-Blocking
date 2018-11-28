@@ -51,10 +51,22 @@ void initRandMat( const int n, double* A ) {
  */
 void daxpy( const int n, const double* A, double* X, double* Y, double* Result ) {
   for ( int i = 0; i < n; i+=4 ) {
+    /* The following operations pack values from an array into the AVX multi-
+     * media registers. 'broadcast' takes a scalar and copies it into the 
+     * many positions of a multimedia register. Load/stores load successive
+     * values of an array. In this example, _mm256d refers to a 256-bit multi-
+     * media register that can hold four doubles (since doubles are 64 bits ea.).
+     * 
+     * This also causes the for-loop to increment over chunks of four, rather than
+     * carry on index by index.
+     */
     __m256d AVX_A = _mm256_broadcast_sd( A );
     /* I have no idea why their notation is inconsistent here. Note that it's
      * '_sd' suffix for a broadcast operation, yet it's '_pd' for all other
      * types of operation.
+     *
+     * Also, for Windows users: use '_mm256_load_pd' instead of '_mm256_loadu_pd'
+     * and '_mm256_store_pd' instead of '_mm256_storeu_pd'.
      */
     __m256d AVX_X = _mm256_loadu_pd( X + i );
     __m256d AVX_Y = _mm256_loadu_pd( Y + i );
@@ -62,6 +74,6 @@ void daxpy( const int n, const double* A, double* X, double* Y, double* Result )
     __m256d _result = _mm256_add_pd( _mm256_mul_pd( AVX_A, AVX_X ), 
                                     AVX_Y );
 
-    _mm256_store_pd( Result, _result );
+    _mm256_storeu_pd( Result, _result );
   }
 }
