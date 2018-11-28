@@ -29,4 +29,49 @@ Your task is to take your working DAXPY code from the previous lab and add cache
 
 ## Approach
 
-Note: When adding your targets to the makefile, I've created a variable called `DAXPY_FLAGS` for convenience that should be used with the compiler instead of `DGMM_FLAGS` (intended for DGMM targets without AVX and unrolling).
+### Part 1 - Test it with DGEMM
+
+Note: When adding your targets to the makefile, I've created a variable called `DAXPY_FLAGS` for convenience that should be used with the compiler instead of `DGMM_FLAGS` (intended for DGMM targets without AVX and unrolling). 
+
+The binary `unopt_dgmm.out` contains the unoptimized version of DGEMM (this is the same unoptimized file that we've been using all along). The timings on my local machine (a very old Dell Precision T5500) are something like this:
+
+```shell
+$ time ./unopt_dgmm.out
+Running matrix multiplication of size 512 x 512
+real	0m1.507s
+user	0m1.507s
+sys	0m0.000s
+```
+
+and with cache blocking, without AVX or loop unrolling, I get the following improvement:
+
+```shell
+time ./cache_blocking_dgmm.out
+Running matrix multiplication of size 512 x 512
+real	0m1.282s
+user	0m1.282s
+sys	0m0.000s
+```
+
+Note that the book's example as written takes up 24KiB. My processor specifically is a Xeon E5606 which has 32 KiB of L1 data cache. However, if we push the boundary and redefine block size as:
+
+```c
+#define BLOCKSIZE 64
+```
+
+we get a new timing results of:
+
+```shell
+$ time ./cache_blocking_dgmm.out
+Running matrix multiplication of size 512 x 512
+real	0m1.415s
+user	0m1.415s
+sys	0m0.000s
+```
+
+which is worse. It's not as bad as the fully unoptimized version, most likely because the chunk is small enough to fit in the L2. You should try to push the envelope with odin. Use your results from last lab, where we investigated the size of the L1 data cache using the `cache_info.out` program. When you're confident with the book's example of cache blocking and DGEMM, and with tweaking the value of `BLOCKSIZE` so that the operation just-fits in L1 data, proceed to the next section.
+
+### Part 2 - Implement with DAXPY
+
+
+As we move to DAXPY there will be at least some improvement, because of the principle of spatial locality, there This is because a matrix multiplication has many re-references of the same index. As we move to DAXPY we may not see such a large improvement because indexes are only accessed once. 
