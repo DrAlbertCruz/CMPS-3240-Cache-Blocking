@@ -46,12 +46,22 @@ void initRandMat( const int n, double* A ) {
 /* DAXPY - Double precision A * X + Y, where A is a scalar double,
  * X and Y are double vectors of the same length. This particular
  * function is both loop unrolled and uses SIMD/AVX intrinsics.
+ * AVX intrinsics can only broadcast a memory location, so this is
+ * why the constant A must be passed as a pointer.
  */
 void daxpy( const int n, const double* A, double* X, double* Y, double* Result ) {
-  for ( int i = 0; i < n; i++ ) {
-    double c;
+  for ( int i = 0; i < n; i+=4 ) {
+    __m256d AVX_A = _mm256_broadcast_sd( A );
+    /* I have no idea why their notation is inconsistent here. Note that it's
+     * '_sd' suffix for a broadcast operation, yet it's '_pd' for all other
+     * types of operation.
+     */
+    __m256d AVX_X = _mm256_loadu_pd( X + i );
+    __m256d AVX_Y = _mm256_loadu_pd( Y + i );
 
-    c = *A * X[i] + Y[i];
-    Result[i] = c;
+    __m256d _result = _mm256_add_pd( _mm256_mul_pd( AVX_A, AVX_X ), 
+                                    AVX_Y );
+
+    _mm256_store_pd( Result, _result );
   }
 }
