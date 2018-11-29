@@ -1,5 +1,5 @@
 CC=gcc
-DAXPY_FLAGS=-Wall -mavx -std=c99 -O3 -funroll-loops 
+DAXPY_FLAGS=-Wall -mavx -std=c99 -O3 -funroll-loops
 DGMM_FLAGS=-Wall -O0 -std=c99
 UNOPT_OUT=unopt_dgmm.out
 OPT_OUT=cache_blocking_dgmm.out
