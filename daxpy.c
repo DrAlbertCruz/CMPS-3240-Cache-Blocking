@@ -48,11 +48,22 @@ void initRandMat( const int n, double* A ) {
  * function is both loop unrolled and uses SIMD/AVX intrinsics.
  * AVX intrinsics can only broadcast a memory location, so this is
  * why the constant A must be passed as a pointer.
+ *
+ * This is different from how we previously unrolled loops. Before,
+ * we did two things:
+ * 1) -funroll-loops as a flag sent to GCC
+ * 2) Created an outer for loop to assist the compiler in the un-
+ * roll operation.
+ *
+ * -funroll-loops unrolls *all* loops. If you want to specifically
+ * unroll one loop, do not pass this command to the compiler. Then,
+ * use compiler directives via #pragma to instruct GCC to unroll 
+ * the contents of an entire function. 
  */
-#pragma GCC push_options
+#pragma GCC push_options // Optimization applies from here on only
 #pragma GCC optimize ("unroll-loops")
 void daxpy( const int n, const double* A, double* X, double* Y, double* Result ) {
-    for ( int i = 0; i < n; i+=4 ) {
+  for ( int i = 0; i < n; i+=4 ) {
       /* The following operations pack values from an array into the AVX multi-
        * media registers. 'broadcast' takes a scalar and copies it into the 
        * many positions of a multimedia register. Load/stores load successive
@@ -79,4 +90,4 @@ void daxpy( const int n, const double* A, double* X, double* Y, double* Result )
     _mm256_storeu_pd( Result, _result );
   }
 }
-#pragma GCC pop_options
+#pragma GCC pop_options // Optimization ends here
