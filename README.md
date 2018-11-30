@@ -20,12 +20,10 @@ $ make all
 
 You should get the following:
 ```shell
-gcc -Wall -O0 -std=c99 -c unopt_dgmm.c
 gcc -Wall -O0 -std=c99 -o unopt_dgmm.out unopt_dgmm.o
-gcc -Wall -O0 -std=c99 -c cache_blocking_dgmm.c
 gcc -Wall -O0 -std=c99 -o cache_blocking_dgmm.out cache_blocking_dgmm.o
-gcc -Wall -mavx -std=c99 -O3 -funroll-loops -c daxpy.c
-gcc -Wall -mavx -std=c99 -O3 -funroll-loops -o daxpy.out daxpy.o
+gcc -Wall -mavx -std=c99 -O3 -c daxpy.c
+gcc -Wall -mavx -std=c99 -O3 -o daxpy.out daxpy.o
 ```
 
 The files are:
@@ -96,5 +94,7 @@ For part 1, include a table explaining the run times for Part 1. Consider the fo
 * Small enough to fit in L1 data
 * Too big to fit in L1 data, yet small enough to fit in L2
 * Too big for L2
+
+*Do this for both DGEMM and DAXPY.*
 
 For part 2, discuss your timing results, and how--as you understand it--DAXPY does not benefit from cache blocking as much as DGEMM.
