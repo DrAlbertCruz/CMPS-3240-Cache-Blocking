@@ -7,7 +7,7 @@
 /* Define size of the vector here. This is 2^18. 2^19 causes a segmentation fault
  * on my machine. -Albert
  */
-#define VECTOR_SIZE 262144
+#define VECTOR_SIZE 324288
 
 void daxpy( const int n, const double* A, double* X, double* Y, double* Result );
 void initRandMat( int m, double* A );
@@ -49,11 +49,13 @@ void initRandMat( const int n, double* A ) {
  * AVX intrinsics can only broadcast a memory location, so this is
  * why the constant A must be passed as a pointer.
  */
+#pragma GCC push_options
+#pragma GCC optimize ("unroll-loops")
 void daxpy( const int n, const double* A, double* X, double* Y, double* Result ) {
-  for ( int i = 0; i < n; i+=4 ) {
-    /* The following operations pack values from an array into the AVX multi-
-     * media registers. 'broadcast' takes a scalar and copies it into the 
-     * many positions of a multimedia register. Load/stores load successive
+    for ( int i = 0; i < n; i+=4 ) {
+      /* The following operations pack values from an array into the AVX multi-
+       * media registers. 'broadcast' takes a scalar and copies it into the 
+       * many positions of a multimedia register. Load/stores load successive
      * values of an array. In this example, _mm256d refers to a 256-bit multi-
      * media register that can hold four doubles (since doubles are 64 bits ea.).
      * 
@@ -77,3 +79,4 @@ void daxpy( const int n, const double* A, double* X, double* Y, double* Result )
     _mm256_storeu_pd( Result, _result );
   }
 }
+#pragma GCC pop_options
