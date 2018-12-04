@@ -58,21 +58,13 @@ void initRandMat( const int n, double* A ) {
  * -funroll-loops unrolls *all* loops. If you want to specifically
  * unroll one loop, do not pass this command to the compiler. Then,
  * use compiler directives via #pragma to instruct GCC to unroll 
- * the contents of an entire function. 
+ * the contents of an entire function. In practice, this will 
+ * actually unroll recursive functions as well.
  */
 #pragma GCC push_options // Optimization applies from here on only
 #pragma GCC optimize ("unroll-loops")
 void daxpy( const int n, const double* A, double* X, double* Y, double* Result ) {
   for ( int i = 0; i < n; i+=4 ) {
-      /* The following operations pack values from an array into the AVX multi-
-       * media registers. 'broadcast' takes a scalar and copies it into the 
-       * many positions of a multimedia register. Load/stores load successive
-     * values of an array. In this example, _mm256d refers to a 256-bit multi-
-     * media register that can hold four doubles (since doubles are 64 bits ea.).
-     * 
-     * This also causes the for-loop to increment over chunks of four, rather than
-     * carry on index by index.
-     */
     __m256d AVX_A = _mm256_broadcast_sd( A );
     /* I have no idea why their notation is inconsistent here. Note that it's
      * '_sd' suffix for a broadcast operation, yet it's '_pd' for all other
